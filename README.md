@@ -1,2 +1,2 @@
-# blender-python-scripts
+# blender-scripts
 Python scripts for Blender
