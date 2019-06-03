@@ -1,0 +1,34 @@
+import bpy
+
+space = 1               # edge of sphere to adjacent edge of sphere
+distance = space + 2    # center to center distance between spheres
+height = 5              # number of sphere layers in z-direction
+depth = 4               # number of sphere layers in y-direction
+width = 4               # number of sphere layers in x-direction
+floor = -2              # z location of passive plane
+
+# add array of spheres
+for z in range(height):
+    for y in range(depth):
+        for x in range(width):
+            # add sphere
+            bpy.ops.mesh.primitive_uv_sphere_add(location = [x * distance, y * distance, z * distance])  
+            bpy.ops.object.shade_smooth()                             # smooth primitive sphere
+            bpy.ops.rigidbody.object_add()                            # add sphere to Physics
+            # in Properties - Physics - adjust 'Rigid Body', 'Setting', 'Collisions', 'Surface Response', etc.                                 
+            bpy.context.object.rigid_body.type = 'ACTIVE'             # role of sphere (Moving) in simulation
+            bpy.context.object.rigid_body.mass = 10
+            bpy.context.object.rigid_body.collision_shape = 'SPHERE'  # 'SHAPE'; of collisions; others: 'MESH', 'CONE', ETC
+            bpy.context.object.rigid_body.enabled = True              # 'DYNAMIC' - rigid body actively participates
+            bpy.context.object.rigid_body.restitution = 1             # 'BOUNCINESS' - tendency to bounce (0 -> 1)
+
+# add plane
+bpy.ops.mesh.primitive_plane_add(location = [((width - 1) * distance)/2, \
+            ((depth - 1) * distance)/2, floor], size = 1 * depth * width)
+
+bpy.ops.rigidbody.object_add()                   # add plane to Physics
+bpy.context.object.rigid_body.type = 'PASSIVE'   # role of plane (Rigid) in simulation
+                                                 # all other Physics values default
+
+# set end of frame;  in Properties Panel > Scene > Cache > End is greater or equal to this value
+bpy.context.scene.frame_end = 1000   
