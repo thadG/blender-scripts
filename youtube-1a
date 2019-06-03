@@ -1,0 +1,4 @@
+import bpy
+
+for z in range(height):
+    bpy.ops.mesh.primitive_uv_sphere_add(location = [0, 0, height * 3])
